@@ -162,7 +162,7 @@ const UpdateUserForm = ({ isEditing, setIsEditing, getAllUsers, selectedUser }) 
         <h3 className="font-bold">Actualizar usuario</h3>
       </Modal.Header>
       <Modal.Body>
-        <form id="userForm" name="userForm" noValidate onSubmit={formik.handleSubmit}>
+        <form id="userFormX" name="userForm" noValidate onSubmit={formik.handleSubmit}>
           <div className="flex flex-col gap-2">
             <h3 className="font-bold text-2xl">Datos de usuario</h3>
             <div className="grid grid-flow-col gap-2 mt-4">
@@ -376,7 +376,7 @@ const UpdateUserForm = ({ isEditing, setIsEditing, getAllUsers, selectedUser }) 
       </Modal.Body>
       <Modal.Footer className="flex justify-end gap-2">
         <Button onClick={closeModal} color="gray">CANCELAR</Button>
-        <Button type="submit" form="userForm" color="success" disabled={formik.isSubmitting || !formik.isValid} onClick={()=>{console.log(formik.values);}}>GUARDAR</Button>
+        <Button type="submit" form="userFormX" color="success" disabled={formik.isSubmitting || !formik.isValid}>GUARDAR</Button>
       </Modal.Footer>
     </ Modal>
   );

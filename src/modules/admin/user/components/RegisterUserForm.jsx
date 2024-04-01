@@ -121,6 +121,7 @@ const RegisterUserForm = ({ isCreating, setIsCreating, getAllUsers }) => {
           }
         } catch (error) {
           customAlert('Ocurrio un error', 'Error al registrar al usuario', 'error');
+          console.log(values);
           console.log(error)
         } finally {
           setSubmitting(false);
