@@ -1,17 +1,25 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { Avatar, Dropdown, Navbar } from 'flowbite-react';
 import { Sidebar } from 'flowbite-react';
 import { HiArrowSmRight, HiChartPie, HiInbox, HiShoppingBag, HiTable, HiUser } from 'react-icons/hi';
+import AuthContext from "../../config/context/auth-context";
+import { useNavigate } from 'react-router-dom';
 
 const AdminLayout = () => {
+  const { dispatch } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    dispatch({ type: "SIGNOUT" });
+    navigate("/", {replace: true});
+  };
   return (
     <>
       <header>
         <Navbar fluid rounded style={{backgroundColor:"paleturquoise"}}>
-          <Navbar.Brand href="https://flowbite-react.com">
+          <Navbar.Brand href="/">
             <img src="https://flowbite.s3.amazonaws.com/brand/logo-dark/mark/flowbite-logo.png" className="mr-3 h-6 sm:h-9" alt="Flowbite React Logo" />
-            <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Navbar ejemplo</span>
+            <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Client</span>
           </Navbar.Brand>
           <div className="flex md:order-2">
             <Dropdown
@@ -29,7 +37,7 @@ const AdminLayout = () => {
               <Dropdown.Item>Settings</Dropdown.Item>
               <Dropdown.Item>Earnings</Dropdown.Item>
               <Dropdown.Divider />
-              <Dropdown.Item>Sign out</Dropdown.Item>
+              <Dropdown.Item onClick={handleLogout}>Sign out</Dropdown.Item>
             </Dropdown>
             <Navbar.Toggle />
           </div>
@@ -86,7 +94,7 @@ const AdminLayout = () => {
                 <Sidebar.Item href="#" icon={HiArrowSmRight}>
                   Sign In
                 </Sidebar.Item>
-                <Sidebar.Item href="#" icon={HiTable}>
+                <Sidebar.Item href="#" icon={HiTable} onClick={handleLogout}>
                   Sign Out
                 </Sidebar.Item>
               </Sidebar.ItemGroup>

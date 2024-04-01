@@ -18,16 +18,13 @@ import AxiosClient from "../../../../config/http-client/axios-client";
   2. Backend update del usuario
 */
 
-const UpdateUserForm = ({ isEditing, setIsEditing, getAllUsers, id }) => {
+const UpdateUserForm = ({ isEditing, setIsEditing, getAllUsers, selectedUser }) => {
   const [users, setUsers] = useState([]);
 
   const closeModal = () => {
+    formik.resetForm();
     setIsEditing(false);
   };
-
-  const idPerson = id;
-
-
 
 
   const handleChangeAvatar = (event) => {
@@ -37,10 +34,9 @@ const UpdateUserForm = ({ isEditing, setIsEditing, getAllUsers, id }) => {
     for (const file of files) {
       const reader = new FileReader();
       reader.onloadend = (data) => {
-
-        formik.setFieldTouched('avatar', true);
-        formik.setFieldValue('avatar', data.result)
-      }
+        formik.setFieldTouched("avatar", true);
+        formik.setFieldValue("avatar", data.result);
+      };
       reader.readAsDataURL(file);
     }
   }
@@ -105,6 +101,7 @@ const UpdateUserForm = ({ isEditing, setIsEditing, getAllUsers, id }) => {
     onSubmit: async (values, { setSubmitting }) => {
       confirmAlert(async () => {
         try {
+          console.log(values);
           const payload = {
             ...values,
             birthDate: values.birth_date,
@@ -112,46 +109,55 @@ const UpdateUserForm = ({ isEditing, setIsEditing, getAllUsers, id }) => {
               username: values.username,
               avatar: values.avatar,
               password: values.password,
-              roles: [{ id: values.roles }]
-            }
-          }
+              roles: [{ id: values.roles }],
+            },
+          };
           const response = await AxiosClient({
-            method: "POST",
-            url: '/person/',
-            data: payload
-          })
+            method: "PUT",
+            url: "/person/",
+            data: payload,
+          });
           if (!response.error) {
-            customAlert('Registro exitoso', 'El usuario se ha registrado correctamente', 'success')
+            console.log(response);
+            customAlert(
+              "Actualización exitosa",
+              "El usuario se ha actualizado correctamente",
+              "success"
+            );
             getAllUsers();
             closeModal();
           }
         } catch (error) {
-          customAlert('Ocurrio un error', 'Error al registrar al usuario', 'error');
-          console.log(error)
+          customAlert(
+            "Ocurrio un error",
+            "Error al actualizar al usuario",
+            "error"
+          );
+          console.log(error);
         } finally {
           setSubmitting(false);
         }
-      })
+      });
     },
   });
 
-  const getUser = async (idPerson) => {
-    try {
-      const response = await AxiosClient({ url: `/person/${idPerson}`, method: 'GET' });
-      console.log(response);
-      if (!response.error) setUsers(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   useEffect(() => {
-    getUser(idPerson);
-    console.log(users);
-  }, []);
+    if (selectedUser) {
+      formik.setValues({
+        username: selectedUser.username || "",
+        roles: selectedUser.roles || "",
+        name: selectedUser.person.name || "",
+        surname: selectedUser.person.surname || "",
+        lastname: selectedUser.person.lastname || "",
+        curp: selectedUser.person.curp || "",
+        birthDate: selectedUser.person.birthDate || "",
+        avatar: selectedUser.person.avatar || null,
+      });
+    }
+  }, [selectedUser]);
 
   return (
-    < Modal onClose={() => closeModal()} show={isEditing} size={"4xl"} >
+    <Modal onClose={() => closeModal()} show={isEditing} size={"4xl"}>
       <Modal.Header>
         <h3 className="font-bold">Actualizar usuario</h3>
       </Modal.Header>
@@ -177,7 +183,7 @@ const UpdateUserForm = ({ isEditing, setIsEditing, getAllUsers, id }) => {
                   helperText={
                     formik.touched.username &&
                     formik.errors.username && (
-                      <span classname="text-red-600">
+                      <span className="text-red-600">
                         {formik.errors.username}
                       </span>
                     )
@@ -196,7 +202,7 @@ const UpdateUserForm = ({ isEditing, setIsEditing, getAllUsers, id }) => {
                   helperText={
                     formik.touched.roles &&
                     formik.errors.roles && (
-                      <span classname="text-red-600">
+                      <span className="text-red-600">
                         {formik.errors.roles}
                       </span>
                     )
@@ -226,7 +232,7 @@ const UpdateUserForm = ({ isEditing, setIsEditing, getAllUsers, id }) => {
                   helperText={
                     formik.touched.password &&
                     formik.errors.password && (
-                      <span classname="text-red-600">
+                      <span className="text-red-600">
                         {formik.errors.password}
                       </span>
                     )
@@ -250,7 +256,7 @@ const UpdateUserForm = ({ isEditing, setIsEditing, getAllUsers, id }) => {
                   helperText={
                     formik.touched.confirmPassword &&
                     formik.errors.confirmPassword && (
-                      <span classname="text-red-600">
+                      <span className="text-red-600">
                         {formik.errors.confirmPassword}
                       </span>
                     )
@@ -279,7 +285,7 @@ const UpdateUserForm = ({ isEditing, setIsEditing, getAllUsers, id }) => {
                   helperText={
                     formik.touched.name &&
                     formik.errors.name && (
-                      <span classname="text-red-600">{formik.errors.name}</span>
+                      <span className="text-red-600">{formik.errors.name}</span>
                     )
                   }
                 />
@@ -297,7 +303,7 @@ const UpdateUserForm = ({ isEditing, setIsEditing, getAllUsers, id }) => {
                   helperText={
                     formik.touched.surname &&
                     formik.errors.surname && (
-                      <span classname="text-red-600">{formik.errors.surname}</span>
+                      <span className="text-red-600">{formik.errors.surname}</span>
                     )
                   }
                 />
@@ -319,7 +325,7 @@ const UpdateUserForm = ({ isEditing, setIsEditing, getAllUsers, id }) => {
                   helperText={
                     formik.touched.lastname &&
                     formik.errors.lastname && (
-                      <span classname="text-red-600">{formik.errors.lastname}</span>
+                      <span className="text-red-600">{formik.errors.lastname}</span>
                     )
                   }
                 />
@@ -339,7 +345,7 @@ const UpdateUserForm = ({ isEditing, setIsEditing, getAllUsers, id }) => {
                   helperText={
                     formik.touched.curp &&
                     formik.errors.curp && (
-                      <span classname="text-red-600">{formik.errors.curp}</span>
+                      <span className="text-red-600">{formik.errors.curp}</span>
                     )
                   }
                 />
@@ -360,7 +366,7 @@ const UpdateUserForm = ({ isEditing, setIsEditing, getAllUsers, id }) => {
                   helperText={
                     formik.touched.birth_date &&
                     formik.errors.birth_date && (
-                      <span classname="text-red-600">{formik.errors.birth_date}</span>
+                      <span className="text-red-600">{formik.errors.birth_date}</span>
                     )}
                 />
               </div>
@@ -370,7 +376,7 @@ const UpdateUserForm = ({ isEditing, setIsEditing, getAllUsers, id }) => {
       </Modal.Body>
       <Modal.Footer className="flex justify-end gap-2">
         <Button onClick={closeModal} color="gray">CANCELAR</Button>
-        <Button type="submit" form="userForm" color="success" disabled={formik.isSubmitting || !formik.isValid}>GUARDAR</Button>
+        <Button type="submit" form="userForm" color="success" disabled={formik.isSubmitting || !formik.isValid} onClick={()=>{console.log(formik.values);}}>GUARDAR</Button>
       </Modal.Footer>
     </ Modal>
   );

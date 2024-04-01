@@ -20,6 +20,7 @@ import AxiosClient from "../../../../config/http-client/axios-client";
 
 const RegisterUserForm = ({ isCreating, setIsCreating, getAllUsers }) => {
   const closeModal = () => {
+    formik.resetForm();
     setIsCreating(false);
   };
 
